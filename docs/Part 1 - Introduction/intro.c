@@ -2,17 +2,31 @@
 #include <string.h>
 
 // FIRST EXCERCISE - REVERSE A STRING
+#define MAX_SIZE 100
+
 int main() {
-  char text[] = "Hello World";
-  char copy[20];
-  int j = 0;
+  char text[MAX_SIZE];
+  char reverseText[MAX_SIZE];
+  int i;
+  int j;
 
-  for (int i = strlen(text); i > 0; i--) {
-    copy[++j] = text[i];
+  printf("Enter your word: ");
+  scanf("%s", text);
 
-    printf("Text: %c, Copy: %c\n", text[i], copy[j]);
+  for (i = 0, j = strlen(text) - 1; text[i] != '\0'; i++) {
+    reverseText[i] = text[j];
+    j--;
+
+    printf("Text: %c, ReverseText: %c\n", text[i], reverseText[i]);
   }
 
-  printf("Copy: %s\n", copy);
+  reverseText[i] = '\0';
+  printf("Last: %c\n", text[strlen(text) - 1]);
+  printf("Text: %s\n", text);
+  printf("Reverse: %s\n", reverseText);
+
   return 0;
 }
+/*
+ * This is my solution to the first excercise - reverse a string
+ */
