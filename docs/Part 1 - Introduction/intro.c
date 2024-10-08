@@ -21,7 +21,6 @@ int main() {
   }
 
   reverseText[i] = '\0';
-  printf("Last: %c\n", text[strlen(text) - 1]);
   printf("Text: %s\n", text);
   printf("Reverse: %s\n", reverseText);
 
