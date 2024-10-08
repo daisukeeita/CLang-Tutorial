@@ -62,7 +62,7 @@ A character is a byte - a short, typically 8-bit, integer.
   Hi
 ```
 
-## CHARACTER SETS
+### CHARACTER SETS
 
 The C `char` type is just a number - character representations depend on the character set.
 Modern characters including ☺️ are represented in multi-byte sequences using Unicode nad UTF-8, but in 1978 we used ASCII and other character sets.
@@ -111,3 +111,88 @@ Then, the `strlen()` function in `<string.h>` computes string length.
   $ a.out
   Hello 5
 ```
+
+## CHAPTER 1 - TUTORIAL INTRODUCTION
+
+### 1.1 Getting Started
+
+The only way to learn a new programming language is by writing programs in it. The first program to write is the same for all languages:
+
+Printing the words `Hello World!`.
+
+In traditional C, the program to print _Hello World!_ is
+
+```C
+  main() {
+    printf("Hello World!\n");
+  }
+```
+
+> The Modern minimal version of this program needs a bit more syntax:
+>
+> ```C
+>   #include <stdio.h>
+>   main () {
+>     printf("Hello World!\n")
+>   }
+> ```
+
+Just how to run this program, it depends on the system you are using. As a specific example, on the UNIX operating system you must create the source program in a file whose name ends in `.c`, such as _hello.c_ or _main.c_, then compile it with a command:
+
+```
+  cc hello.c
+```
+
+> On Modern systems, we use `gcc` compiler with the `-ansi` option to accept the "legacy" syntax of C:
+>
+> ```
+>   gcc -ansi hello.c
+> ```
+>
+> To run the resulting `a.out` file, usually you need to pre-pend the local directory because most shell configurations do not include the current path in the paths to search for applications:
+>
+> ```
+>   ./a.out
+> ```
+
+---
+
+A C program, whatever its size, consists of one or more "functions" which specify the actual computing operations that are to be done. In the examples above, `main` is such a function. Normally you are at liberty to give functions whatever name you like, but `main` is a special name - your program begins executing at the beginning of the `main`.
+This means that every program must have a `main` somewhere. It usually invoke other functions to perform its job, some coming from the same program, and others are from libraries of previously written functions.
+
+The line that says
+
+```
+printf("hello, world\n");
+```
+
+Is a function call, which calls a function named `printf`, with the arguments `"hello, world\n"`. `printf` is a library function which prints output on the terminal.
+
+### 1.2 Variables and Arithmetic
+
+In C, all variables must be declared before use, usually at the beginning of the function before any executable statements. A declaration consists of a _type_ and a list of variables which have that type:
+
+```C
+  int lower, upper, step;
+  float fahr, celsius;
+```
+
+The type `int` implies that the variables listed are integers; `float` stands for floating point.
+
+C provides several other basic data types besides `int` and `float`:
+| **Type** | **Description** |
+| --- | ------------ |
+| char | character - a single byte |
+| short | short integer |
+| long | long integer |
+| double | double - precision floating point |
+
+The sizes of these objects are also machine-dependent. There are also arrays, structures and unions of these basic types, pointers to them, and functions that return them.
+
+### 1.3 The For Statement
+
+The `for` itself is a loop, a generalization of the `while`.
+The choice between `while` and `for` is arbitrary, based on what seems clearer.
+
+> The syntax of the `for` and `while` loops is a feature of C-like languages. In modern language, we tend to have two kinds of loop structures - determinants and indeterminant. The `for` and `while` loop structure are indeterminate because you must read them closely to make sure they are properly constructed and, for example, are not unintentionally "infinite loops".
+> An example of a determinant loop is the `foreach` loop in PHP and `for` loop in Python. The semantics of both of these loops is to iterate over all of the elements in a collection. Because collections are not infinite, you can be assured that these determinant loops will not run forever.
