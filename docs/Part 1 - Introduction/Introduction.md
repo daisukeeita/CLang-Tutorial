@@ -426,3 +426,136 @@ In C, all function arguments are passed "by value". This means that the called f
 The main distinction is that in C, the called function _cannot_ alter a variable in the calling function; it can only alter its private, temporary copy.
 
 When necessary, it is possible to arrange for a function to modify a variable in a calling routine. The caller must provide the _address_ of the variable to be set (technically a _pointer_ to the variable), and the called function must declare the argument to be a pointer and reference the actual variable indirectly through it.
+
+### 1.9 Character Arrays
+
+> Look at the next two sections as examples of C-syntax with many important concepts about character strings stored as arrays and calling patterns when passing arrays to functions as parameters, but not exactly best practice when handling dynamically sized data.
+
+Probably the most common type of array in C is the array of characters. To illustrate the use of character arrays and functions to manipulate them, let's write a program which reads a set of lines and prints the longest.
+
+```pseudo-code
+  while (there's another line)
+    if (it's longer than the previous longest)
+      save the line and its length
+  print the longest line
+```
+
+To convert it to C:
+
+```C
+  #include <stdio.h>
+
+  #define MAX_CHAR 1000 /* Maximum input line size */
+
+  main() {
+    int currentLen;
+    int maximumLen;
+    char currentLine[MAX_CHAR];
+    char maximumLine[MAX_CHAR];
+
+    maximumLen = 0;
+    while((currentLen = get_line(currentLine, maximumLine)) > 0) {
+      if (currentLen > maximumLen) {
+        maximumLen = currentLen;
+        copy(currentLine, maximumLine);
+      }
+    }
+
+    if (maximumLen > 0) printf("%s", maximumLine);
+  }
+
+  get_line(s, lim)
+  char s[];
+  int lim;
+  {
+    int c, i;
+
+    for (i = 0; i < lim -1 && (c = getchar()) != EOF && c != '\n'; ++i) s[i] = c;
+    if (c == '\n') {
+      s[i] = c;
+      ++i;
+    }
+
+    s[i] = '\0';
+
+    return(i);
+  }
+
+  copy(s1, s2)
+  char s1[], s2[];
+  {
+    int i;
+
+    i = 0;
+    while ((s2[i] == s1[i]) != '\0') ++i;
+  }
+```
+
+`get_line()` puts the character `\0` (the null character, whose value is zero) at the end of the array it is creating to mark the end of the string of characters. This convention is also used by the C compiler.
+
+When a constant like `hello\n` is written in C, the compiler creates an array of characters containing the character of the string, and terminates it with a `\0` so that functions such as `printf()` can detect the end.
+
+| h   | e   | l   | l   | o   | \n  | \0  |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0   | 1   | 2   | 3   | 4   | 5   | 6   |
+
+### 1.10 Scope; External Variables
+
+The variables in `main()` (line, save, etc.) are private or local to `main`: because they are declared within `main()`, no other functions can have direct access to them. The same is true to the other variables declared inside their functions; for example, the variable `i` in `get_line()` is unrelated to the `i` in `copy()`. Each local variable in a routine comes into existence only when the function is called, and _disappears_ when the function is exited.
+It is for these reason that such variables are usually known as automatic variables.
+
+Because automatic variables come and go with function invocation, they do not retain their values from one call to the next and must be explicitly set upon each entry. If they are not set, they will contain garbage.
+
+As an alternative to automatic variables, it is possible to define variables which are _external_ to all functions, that is, global variables which can be accessed by name by any functions that cares to. Furthermore, because external variables remain in existence permanently, rather than appearing and disappearing as functions are called and exited, they retain their values even after the functions that set them are done.
+
+An external variable has to be defined outside of any functions; this also allocates actual storage for it. The variable must also be declared in each function that wants to access it; this may done either by an explicit `extern` declaration or implicitly by context.
+
+```C
+  #include <stdio.h>
+
+  #define MAXLINE 1000
+
+  char line[MAXLINE];
+  char save[MAXLINE];
+  int max;
+
+  main () {
+    int len;
+    extern int max;
+    extern char save[];
+
+    max = 0;
+
+    while ((len = get_line()) > 0)
+      if (len > max){
+        max = len;
+        copy();
+      }
+
+    if (max > 0) printf("%s", save);
+  }
+
+  get_line() {
+    int c, i;
+    extern char line[];
+
+    for (i = 0; i < MAXLINE - 1 && (c = getchar() != EOF && c != '\n'; ++i) line[i] = c;
+    if (c == '\n') {
+      line[i] = c;
+      ++i;
+    }
+
+    line [i] = '\0';
+    return(i)
+  }
+
+  copy() {
+    int i;
+    extern char line[], save[];
+
+    i = 0;
+    while ((save[i] = line[i]) != '\0') ++i;
+  }
+```
+
+In certain circumstances, the `extern` declaration can be omitted: if the external definition of a variable occurs in the source file before its use in a particular function, then there's no need for an `extern` declaration in the function.
