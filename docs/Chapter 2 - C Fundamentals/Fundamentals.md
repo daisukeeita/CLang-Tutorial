@@ -3,7 +3,7 @@
 **Outline to this Chapter**
 | Section | Description |
 | -------------- | --------------- |
-| [Section 2.1]( ## Writing a Simple Program ) | Presents a small C program and describes how to compile and link it. |
+| [Section 2.1](#writing-a-simple-program) | Presents a small C program and describes how to compile and link it. |
 | [Section 2.2][## The General Form of a Simple Program] | Discusses how to generalize the program. |
 | [Section 2.3][## Comments] | Shows how to add explanatory remarks, know a comments. |
 | [Section 2.4][## Variables and Assignments] | Intorduces variables, which store data that may change during the execution of a program. |
