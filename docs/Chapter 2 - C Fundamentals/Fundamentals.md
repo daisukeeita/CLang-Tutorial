@@ -165,7 +165,7 @@ C99 provides a second kind of comment, which begins with `//` (two adjacent slas
 
 This style of comment ends automatically at the end of a line. To create a comment that is more than one line long, you can either use the older comment style `/**/` or put `//` at the beginning of each comment line.
 
-## 2.4 Variables and Assignment
+## Variables and Assignment
 
 Most programs need to perform a series of calculations before producing output, and thus need a way to store data temporarily during program execution. In C, as in most programming languages, these storage locations are called **_variables_**.
 
