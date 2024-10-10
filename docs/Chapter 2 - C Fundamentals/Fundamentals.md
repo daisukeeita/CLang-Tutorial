@@ -123,3 +123,128 @@ A statement is a command to be executed when the program runs. The _main.c_ prog
 Asking a function to perform its assigned task is known as **_function call_**. An example of a function call is the `printf()` that prints a string.
 
 C requires that each statement end with a semicolon. The semicolon shows the compiler where the statement ends; since statements can continue over several lines, it's not always obvious where they end. Directives on the other hand, are normally on line long, and they don't end with a semicolon.
+
+#### Printing Strings
+
+`printf()` is a powerful function that will be examined in the later chapter. `printf()` doesn't automatically advance to the next output line when it finishes printing. To instruct `printf()` to advance on line, you must include `\n` (new-line character) in the string to be printed.
+
+## Comments
+
+The _main.c_ program still lacks something important: documentation.
+
+Every program should contain identifying information:
+
+- The Program Name
+- The Date Written
+- The Author
+- The Purpose of the Program
+- so on and so forth...
+
+In C, this kind of information is place in **comments**. The symbol `/*` marks the beginning of a comment and the symbol `*/` marks the end:
+
+```C
+  /* This is a Comment */
+```
+
+Comments may appear almost anywhere in a program, either on separate lines or on the same lines as other program text.
+
+Forgetting to terminate a comment may cause the compiler to ignore part of your program. Consider the following example:
+
+```C
+  printf("My"); /* Forgot to close this comment...
+  printf("Cat");
+```
+
+#### C99
+
+C99 provides a second kind of comment, which begins with `//` (two adjacent slashes):
+
+```C
+  // this is a comment
+```
+
+This style of comment ends automatically at the end of a line. To create a comment that is more than one line long, you can either use the older comment style `/**/` or put `//` at the beginning of each comment line.
+
+## 2.4 Variables and Assignment
+
+Most programs need to perform a series of calculations before producing output, and thus need a way to store data temporarily during program execution. In C, as in most programming languages, these storage locations are called **_variables_**.
+
+#### Types
+
+Every variable must have a **_type_**, which specifies what kind of data it will hold. Choosing the proper type is critical, since the type affects how the variable is stored and what operations can be performed on the variable. The type of a numeric variable determines the largest and smallest numbers that the variable can store; it also determines whether or not digits are allowed after the decimal point.
+
+A variable of type `int` (short for integer) can store a whole number such as 0, 1, 392, or -2553. The range of possible values is limited, though. The largest int value is typically 2,147,483, 647 but can be as small as 32,767.
+
+A variable of type `float` (short for floating-point) can store much larger numbers than an int variable. Furthermore, a float variable can store numbers with digits after the decimal point, like 379.125. Arithmetic on float numbers may be slower that arithmetic on int numbers.
+
+#### Declarations
+
+Variables must be **_declared_** - described for the benefit of the compiler - before they can be used. To declare a variable, you first specify the type of the variable, then its name.
+
+> Variable names are chosen by the programmer
+
+```C
+  int height;
+  float profit;
+```
+
+In the first template of the `main` did not include declarations. When `main` contains declarations, these must precede statements:
+
+```C
+  int main (void) {
+    // declarations
+
+    // statements
+  }
+```
+
+As a matter of style, it is a good idea to leave a blank line between the declarations and the statements.
+
+#### Assignment
+
+A variable can be given a value by means of **_assignment_**.
+
+```C
+  height = 8;
+  length = 12;
+  width = 10;
+```
+
+The statements about assign values to height, length, and width. The numbers 8, 12, and 10 are said to be **_constants_**.
+
+A constant assigned to a float variable usually contains a decimal point.
+
+```C
+  profit = 2150.48;
+```
+
+It is best to append the letter 'f' (for "float") to a constant that contains a decimal point if the number is assigned to a float variable. Failing to include the 'f' may cause a warning from the compiler.
+
+```C
+  profit = 2150.48f;
+```
+
+An `int` variable is normally assigned a value type `int`, and a `float` variable is normally assigned a value of type `float`.
+Mixing types is possible but not always safe.
+
+Once a variable has been assigned a value, it can be used to help compute he value of another variable. In general, the right side of an assignment can be a formula (or **_expression_**) involving constants, variables, and operators.
+
+```C
+  int volume = height * length * width *; // volume is not 960
+```
+
+#### Printing the Value of a Variable
+
+We can use the `printf()` to display the current value of a variable.
+
+```C
+  printf("Height: %d\n", height);
+```
+
+`%d` is a placeholder indicating where the value of height is to be filled in during printing. `%d` only works for int variables. To print float variable, you'd use `%f` instead. By default, `%f` displays a number with six digits after the decimal point.
+
+To force `%f` to display 'x' digits after the decimal point, you can put `.'x'` between % and f.
+
+```C
+  printf("Profit: %.2f\n", profit);
+```
