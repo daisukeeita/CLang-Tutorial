@@ -116,3 +116,10 @@ The `main` function also returns a value, it returns a status code that is given
 
 The word `int` just before `main` indicates that the `main` function returns and integer value.
 The word `void` in parenthesis indicates that `main` has no arguments.
+
+#### Statements
+
+A statement is a command to be executed when the program runs. The _main.c_ program uses only one kind of statement, the `return` statement.
+Asking a function to perform its assigned task is known as **_function call_**. An example of a function call is the `printf()` that prints a string.
+
+C requires that each statement end with a semicolon. The semicolon shows the compiler where the statement ends; since statements can continue over several lines, it's not always obvious where they end. Directives on the other hand, are normally on line long, and they don't end with a semicolon.
