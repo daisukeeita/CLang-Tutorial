@@ -11,3 +11,7 @@
 | [Section 2.6][## Defining Names for Constants] | Shows Constants - data that won't change during program execution |
 | [Section 2.7][## Indentifiers] | Explains C's rules for creating name (Indentifiers). |
 | [Section 2.8][## Layout of a C Program] | Shows the rules for laying out a program. |
+
+## Writing a Simple Program
+
+In contrast to prgrams written in some languages, C programs require little "boilerplate" - a complete program can be as short as a few lines.
