@@ -282,3 +282,90 @@ This can be replaced into:
 ```
 
 `printf()` ability to print expressions illustrates one of C's general principles: _Wherever a value is needed, any expression of the same type will do._
+
+## Reading Input
+
+To obtain input, you'll use the `scanf()` function, the C library's counterpart to `printf()`. The 'f' in `scanf()`, like the 'f' in `printf()`, stands for **"formatted"**; both `scanf()` and `printf()` require the use of the **_format string_** to specify the appearance of the input or output data.
+
+```C
+  scanf("%d", &i); // reads an integer and stores into i
+```
+
+The `%d` string tells `scanf()` to read input that represents an integer; `i` is an `int` varaible into which we want `scanf()` to store the input.
+The `&` symbol is, for now, usually (but not always) required when using `scanf()`
+
+```C
+  scanf("%f", &x); // reads a float value and stores into x
+```
+
+Reading a `float` value requires a slightly different call of `scanf()`
+The `%f` string tells `scanf()`to look for an input value in `float` format, the number may contain a decimal point, but doesn't have to.
+
+## Defining Names for Constants
+
+When a program contains constants, it is often good idea to give them names. Using the feature know as **_macro definition_**, you can name a constant:
+
+```C
+  #define INCHES_PER_POUND 166
+```
+
+`#define` is a preprocessing directive, just as `#include` is, so there is not semicolon at the end of the line.
+
+When a program is compile, the preprocessor replaces each macro by the value that is prepresents.
+
+```C
+  int weight = (volume + INCHES_PER_POUND - 1) / INCHES_PER_POUND;
+```
+
+After compilation:
+
+```C
+  weight = (volume + 166 - 1) / 166;
+```
+
+The value of a macro can be an expression:
+
+```C
+  #define RECIPROCAL_OF_PI (1.0f / 3.14159f)
+```
+
+If it contains operators, the expression should be enclosed in parenthesis.
+The upper-case letters in macro names is a convention that most C programmers follow, not a requirement of the language.
+
+## Indentifiers
+
+As you're writing a program, you'll have to choose names for variables, functions, macros, and other entities. These names are call **_identifiers_**. In C, an identifier may contain letters, digits, and underscores, but must begin with a letter or underscore.
+
+Examples of legal identifiers:
+
+```
+  times10  get_next_char  _done
+```
+
+C is **_case-sensitive_**: it distinguishes between upper-case and lower-case letters in indentifiers.
+
+C places no limit on the maximum length of an identifier, so don't be afraid to use long, descriptive names. A name such as `current_page` or `currentPage` is a lot easier to understand than a name like `cp`.
+
+## Keywords
+
+The **_keywords_** have special significance to C compilaers and therefore can't be used as identifiers.
+
+| Column 1 | Column 2 | Column 3 | Column 4    |
+| -------- | -------- | -------- | ----------- |
+| auto     | enum     | restrict | unsigned    |
+| break    | extern   | return   | void        |
+| case     | float    | short    | volatile    |
+| char     | for      | signed   | while       |
+| const    | goto     | sizeof   | \_Bool      |
+| continue | if       | static   | \_Complex   |
+| default  | inline   | struct   | \_Imaginary |
+| do       | int      | switch   |             |
+| double   | long     | typedef  |             |
+| else     | register | union    |             |
+
+Because of C's case-sensitivity, keywords must appear in progrmas exactly as show in the table. Names of functions in the standard library (such as `printf()`) contain only lower-case letter.
+
+> [!WARNING]
+> Watch out for other restrictions on identifiers. Some compilers treat certain identifiers as additional keywords. Identifiers that belong to the standard library are restricted as well. Accidentally using one of these names can cause an error during compilation or linking. Identifiers that begin with an underscore are also restricted.
+
+## Layout of a C Program
