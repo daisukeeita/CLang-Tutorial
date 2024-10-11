@@ -248,3 +248,37 @@ To force `%f` to display 'x' digits after the decimal point, you can put `.'x'` 
 ```C
   printf("Profit: %.2f\n", profit);
 ```
+
+#### Initializaiton
+
+Some variables are automatically set to zero when a program begins to execure, but most are not. A variable that doesn't have a default value and hasn't yet been assigned a value by the program is said to be **_uninitialized_**.
+
+> [!WARNING]
+> Attempting to access the value of an uninitialized variable (for example, by displaying the variable using `printf()` of using it in an expression) may yield an unpredictable result such as "2568", "-30891", or some equally strange number. With some compilers, worse behaviour - even a program crash - may occur.
+
+In C jargon, the value `8` is said to be an **_initalizer_**. Any number of variables can be initialized in the same declaration:
+
+```C
+  int height = 8, length = 12, width = 10;
+
+  int height, length, width = 10;
+```
+
+Notice that each variable requires its own initializer. In the example above, the initializer `10` is good only for the variable `width`, not for `height` or `length`, which remains uninitialized.
+
+#### Printing Expressions
+
+`printf()` is not limited to displaying numbers store in variables; it can display the value any _any_ numeric expression. Taking advantage of this property can simplify a program and reduce the number of variables.
+
+```C
+  int volume = height * length * width;
+  printf("%d\n", volume);
+```
+
+This can be replaced into:
+
+```C
+  printf("%d\n", height * width * length);
+```
+
+`printf()` ability to print expressions illustrates one of C's general principles: _Wherever a value is needed, any expression of the same type will do._
