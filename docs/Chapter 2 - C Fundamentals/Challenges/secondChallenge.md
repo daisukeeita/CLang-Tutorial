@@ -83,3 +83,9 @@ Final solution:
     return 0;
   }
 ```
+
+Upon reading the `float` vs `double`, which is bothering me:
+
+- **Precision**: The main difference between `float` and `double`is precision. A `float` typically has about 7 decimal places of precision, while `double` has about 15 decimal places. This means that `double` can represent larger numbers and maintain accuracy for more decimal places.
+
+- **Memory**: `float` usually takes up 4 bytes, while `double` takes up 8 bytes. If memory usage is a concern, using `float` might be preferable, but for most applications especially where precision is crucial, `double` is the better choice.
