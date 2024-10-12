@@ -291,7 +291,7 @@ To obtain input, you'll use the `scanf()` function, the C library's counterpart 
   scanf("%d", &i); // reads an integer and stores into i
 ```
 
-The `%d` string tells `scanf()` to read input that represents an integer; `i` is an `int` varaible into which we want `scanf()` to store the input.
+The `%d` string tells `scanf()` to read input that represents an integer; `i` is an `int` variable into which we want `scanf()` to store the input.
 The `&` symbol is, for now, usually (but not always) required when using `scanf()`
 
 ```C
@@ -299,7 +299,7 @@ The `&` symbol is, for now, usually (but not always) required when using `scanf(
 ```
 
 Reading a `float` value requires a slightly different call of `scanf()`
-The `%f` string tells `scanf()`to look for an input value in `float` format, the number may contain a decimal point, but doesn't have to.
+The `%f` string tells `scanf()` to look for an input value in `float` format, the number may contain a decimal point, but doesn't have to.
 
 ## Defining Names for Constants
 
@@ -332,7 +332,7 @@ The value of a macro can be an expression:
 If it contains operators, the expression should be enclosed in parenthesis.
 The upper-case letters in macro names is a convention that most C programmers follow, not a requirement of the language.
 
-## Indentifiers
+## Identifiers
 
 As you're writing a program, you'll have to choose names for variables, functions, macros, and other entities. These names are call **_identifiers_**. In C, an identifier may contain letters, digits, and underscores, but must begin with a letter or underscore.
 
@@ -348,7 +348,7 @@ C places no limit on the maximum length of an identifier, so don't be afraid to 
 
 ## Keywords
 
-The **_keywords_** have special significance to C compilaers and therefore can't be used as identifiers.
+The **_keywords_** have special significance to C compilers and therefore can't be used as identifiers.
 
 | Column 1 | Column 2 | Column 3 | Column 4    |
 | -------- | -------- | -------- | ----------- |
@@ -363,9 +363,27 @@ The **_keywords_** have special significance to C compilaers and therefore can't
 | double   | long     | typedef  |             |
 | else     | register | union    |             |
 
-Because of C's case-sensitivity, keywords must appear in progrmas exactly as show in the table. Names of functions in the standard library (such as `printf()`) contain only lower-case letter.
+Because of C's case-sensitivity, keywords must appear in programs exactly as show in the table. Names of functions in the standard library (such as `printf()`) contain only lower-case letter.
 
 > [!WARNING]
 > Watch out for other restrictions on identifiers. Some compilers treat certain identifiers as additional keywords. Identifiers that belong to the standard library are restricted as well. Accidentally using one of these names can cause an error during compilation or linking. Identifiers that begin with an underscore are also restricted.
 
 ## Layout of a C Program
+
+C allows us to insert any amount of space - blanks, tabs, and new-line characters. This rule has several important consequences for program layout:
+
+- **Statements** can be _divided_ over any number of lines. The following statement, for example, is so long that it would be hard to squeeze it onto a single line:
+
+```C
+  printf("Dimensional weight (pounds): %d\n",
+         (volume + INCHES_PER_POUND -1) / INCHES_PER_POUND);
+```
+
+- **Space** between _tokens_ makes it easier for the eye to separate them. For this reason, you'll usually put a space before and after each operator:
+
+```C
+  volume = height * length * width;
+```
+
+- **Indentation** can make nesting easier to spot.
+- **Blank Lines** can divide a program into logical units, making it easier for the reader to discern the program's structure. A program with no blank lines is as hard to read as a book with no chapters.
