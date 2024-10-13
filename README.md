@@ -10,10 +10,7 @@
 
 - [x] Basic Data Types and Variables
 - [x] Arithmetic Operations
-- [ ] Conditional Statements
-
-  - Challenge: Write a program that checks if a number entered by the user is even or odd. If the number is even, print "The number is even." Otherwise, print "The number is odd."
-
+- [x] Conditional Statements
 - [ ] Loops
 
   - Challenge: Implement a program that prints the first 10 Fibonacci numbers. Use a loop to calculate and display the series.
