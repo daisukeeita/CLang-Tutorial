@@ -17,7 +17,6 @@ Operators are the basic tools for building expressions, and C has an unusually r
 | [ Section 4.2 ](#assignment-operators) | The Assignment Operators |
 | [ Section 4.3 ](#increment-and-decrement-operators) | The Increment and Decrement Operators |
 | [ Section 4.4 ](#expression-evaluation) | How C Expressions are evaluated |
-| [ Section 4.5 ](#expression-statements) | Introduces the Expression Statement |
 
 ## Arithmetic Operators
 
@@ -89,3 +88,163 @@ float f;
 i = 72.99f; /* i is now 72 */
 f = 136; /* f is now 136.00 */
 ```
+
+In C, assignment is an _operator_, just like +. In other words, the act of addignment produces a result, just as adding two numbers prduces a result. The value of an assignment 'v = e' is the value of `v` _after_ the assignment.
+
+Since assignment is an operator, several assignments can be chained together:
+
+i = j = k = 0;
+
+The `=` operator is right associative, so this assignment is equivalent to:
+
+i = (j = (k = 0));
+
+The effect is to assign 0 first to `k`, the to `j`, and finally to `i`.
+
+> [!WARNING]
+> Watch out for unexprected results in chained assignments as a result of type conversion:
+>
+> ```c
+> int i;
+> float f;
+>
+> f = i = 33.3f;
+> ```
+>
+> `i` is assigned the value 33, then `f` is assigned '33.0', not '33.3' as you might think
+
+#### L Values
+
+Most C operators allow their operands to be variables, constatns, or expressions containing other operators. The assignment operator, however, requires an **_lvalue_** as its left operand. An lvalue represents an object stored in computer memory, not a constant or the result of a computation. 'Variables' are lvalues; 'Expressions' such as 10 or 2 \* i are not.
+
+Since the assignment operator requires an lvalue as its left operand, it's illegal to put any other kind of expression on the left side of an assignment expression.
+
+```c
+112 = i;
+i * j = 0;
+-i = j;
+```
+
+The compiler will detect errors of this nature, and you'll get an error message such as _"invalid lvalue in assignment"_
+
+#### Compound Assignment
+
+Assignments that use the old value of a variable to compute its new value are commong in C programs.
+
+```c
+i = i + 2;
+```
+
+C' **_compound assignment_** operators allow us to shorten this statement and others like it. Using the `+=` operator:
+
+```c
+i += 2; /* Same as i = i + 2; */
+```
+
+The `+=` operators adds the value of the right operand to the varaible on the left.
+
+Note that 'v += e' is not really "equivalent" to 'v = v + e'. One problem is oeprator precedence: 'i _= j + k' is not the same is i = i _ j + k. There are also rare cases in which 'v += e' differs from 'v = v + e' because v itself has a side effect.
+
+> [!WARNING]
+> When using the compound assignment operators, be careful not to switch the two characters taht make up the operator. Switching the characters may yield an expression that is acceptable to the compiler but that doesn't have the intended meaning.
+>
+> If you meant to write 'i += j' but typed 'i =+ j' instead, the program will still compile. Unfortunately, the latter expression is equivalent to i = (+j), which merely copies the value of `j` into `i`.
+
+## Increment and Decrement Operators
+
+Two of the most common operations on a variable are "incrementing" (adding 1) and "decrementing" (subtracting 1).
+
+At first glance, the increment and decrement operators are simplicity itself: `++` adds 1 to its operand, whereas `--` substracts 1. Unfortunately, this simplicity is misleading - the increment and decrement operators can be tricky to use.
+
+One complication is the `++` and `--` can be used as **_prefix_** operators (++i and --i) or **_postfix_** operators (i++ and i--). The correctness of a program may hinge on picking the proper version.
+Another complication is that, like the assignment operators, `++` and `--` have side effects: they modify the values of their operands.
+
+Evaluating the expression `++i` (a "pre-increment") yields 'i + 1':
+
+```c
+  int i = 1;
+  printf("i is %d\n", ++i); /* prints "i is 2" */
+  printf("i is %d\n", i); /* prints "i is 2" */
+```
+
+Evaluating the expression `i++` (a "post-increment") produces the result i, but causes i to be incremented afterwards:
+
+```c
+  int i = 1;
+  printf("i is %d\n", i++); /* prints "i is 1" */
+  printf("i is %d\n", i); /* prints "i is 2" */
+```
+
+## Expression Evaluation
+
+| Precedence | Name                | Symbols           | Associativity |
+| ---------- | ------------------- | ----------------- | ------------- |
+| 1          | increment (postfix) | ++                | left          |
+|            | decrement (postfix) | --                |               |
+| 2          | increment (prefix)  | ++                | right         |
+|            | decrement (prefix)  | --                |               |
+|            | unary plus          | +                 |               |
+|            | unary minus         | -                 |               |
+| 3          | multiplicative      | \* / %            | left          |
+| 4          | additive            | + -               | left          |
+| 5          | assignment          | = \*= /= %= += -= | right         |
+
+The table summarizes the operators that have been discussed so far.
+
+Supposed that we run across a complicated expression such as this:
+
+```c
+  a = b += c++ - d + --e / -f
+```
+
+This expression would be easier to understand if there were parentheses to show how the expression is constructed from subexpressions. With the help of the table, adding prentheses to an expression is easy. From the table, the operator with highest precedence is `++`, used here as a postfix operator, so we put parentheses around `++` and its operand.
+
+```c
+  a = b += (c++) - d + --e / -f
+```
+
+We now spot a prefix `--` operator and a unary minus oeprator in the expression:
+
+```c
+  a = b += (c++) - d + (--e) / (-f)
+```
+
+Next is the `/` operator:
+
+```c
+  a = b += (c++) - d + ((--e) / (-f))
+```
+
+The expression contains two operators with the same precedence, substraction and addition. Whenever two operators with the same precedence are adjacent to an operand, we've got to be careful about associativity. The `-` and `+` operators group from left to right, so parentheses go around the subtraction first, then the addition:
+
+```c
+  a = b += (((c++) - d) + ((--e) / (-f)))
+```
+
+The only remaining operators are `=` and `+=`. Both operators are adjacent to `b` so we must take associativity into account. Assignment operators group from right to left, so parentheses go around the `+=` expression first, then the `=` expression:
+
+```c
+  a = (b += (((c++) - d) + ((--e) / (-f))))
+```
+
+The expression is now fully parenthesized.
+
+#### Order of Subexpression Evaluation
+
+C doesn't define the order in whic hsubexpressions are evaluated, with the exception of subexpressions involving the logical _and_, logic _or_, conditional, and comma operators. Thus, in the expression (a + b) \* (c - d) we dont't know whether (a + b) will be evaluated before (c - d).
+
+Most expressions have the same value regardless of the order in whic htheir subexpressions are evaluated. However, this may not be true when a subexpression modifies one of its operands.
+
+```c
+  a = 5;
+  c = (b = a + 2) - (a = 1);
+```
+
+The effect of executing the second statemnt is undefined; the C standard doesn't say what will happen.
+
+> [!WARNING]
+> Avoid writing expressions that access the value of a variable and also modify the varaible elsewhere in the expression. Some compilers may produce a warning message such as _"operation on 'a' may be undefined"_ when they encounter such an expression.
+
+To prevent problems, it's a good idea to avoid using the assignment operators in subexpressions; instead, use a series of separate asignments.
+
+Beside the assignment operators, the only operators that modify their operands are increment and decrement. When using these operators, be careful that your expression don't depend on a particular order of evaluation.
