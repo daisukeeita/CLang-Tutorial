@@ -371,3 +371,75 @@ unsigned long int <- long int <- unsigned int <- int
 The usual arithmetic conversions don't apply to assignment. Instead, C follows the simple rule that the expression on the right side of the assignment is converted to the type of the variable on the left side.
 
 #### Casting
+
+Although C's implicit conversions are convenient, we sometimes need da greater degree of control over type conversion. For this reason, C provides **_casts_**.
+
+( type-name ) expression
+
+A cast _type-name_ specifies the type to which the expressions hould be converted.
+
+```c
+  float f, frac_part;
+
+  frac_part = f - (int) f;
+```
+
+The cast expression `(int) f` represents the result of converting the value of `f` to type `int`. C's usual arithmetic conversions then require that `(int) f` be converted back to type `float` before the subtraction can be performed.
+
+Cast expressions enable us to document type conversions that would take place anyway:
+
+```c
+  i = (int) f; /* f is converted to int */
+```
+
+## Type Definitions
+
+Using `typedef` to define `Bool` causes the compiler to add `Bool` to the list of type names that it recognizes.
+
+```c
+  typedef int Bool;
+```
+
+`Bool` can now be used in the same way as the built-in type names - in variable declarations, cast expressions, and elsewhere.
+
+```c
+  Bool flag; /* same as int flag */
+```
+
+The compiler treats `Bool` as a synonym for `int`; thus, `flag` is really nothing more that an ordinary `int` variable.
+
+#### Advantages of Type Definitions
+
+Type definitions can make a program more understandable, assuming that the programmer has been careful to choose meaningful type names.
+
+```c
+  typedef float Dollars;
+
+  Dollars cash_in, cash_out;
+```
+
+Type definitions can also make a program easier to modify. If we later decide that `Dollars` should really be defined as `double`, all we need do is change the type definition.
+
+#### Type Definitions and Portability
+
+Type definitions are an important tool for writing portable programs. One of the problems with moving a program from one computer to another is that types may have different ranges on different machines.
+
+> [!TIP]
+> For greater portability, consider using `typedef` to define new names for integer types.
+
+The C library itself uses `typedef` to create names for typpes that can vary from one C implementation to another; these types often have names that end with `_t`, such as `ptrdiff_t`, `size_t`, and `wchar_t`.
+
+```c
+  typedef long int ptrdiff_t;
+  typedef unsigned long int size_t;
+  typedef int wchar_t;
+```
+
+## The sizeof Operator
+
+The `sizeof()` operator allows a program to determine how much memory is required to store values of a particular type.
+
+sizeof ( type-name )
+
+The value of the expression is an unsigned integer representing the number of byts required to store a value belonging to _type-name_. `sizeof(char)` is always 1, but the sizes of the other types may vary.
+On a 32-bit machine, `sizeof(int)` is normally 4.
