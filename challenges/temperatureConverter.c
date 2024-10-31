@@ -70,4 +70,51 @@ int main(void) {
  * 3. Move the variables for conversion under conditional statement of
  temperatures. That way, the value after calculation will be based on the input
  of the user not in a static value.
+ *
+ *
+ * Sample code to improve the approach to the challenge:
+ *
+ * ```
+ * #include <stdio.h>
+
+#define FAHRENHEIT_OFFSET 32
+#define FAHRENHEIT_TO_CELSIUS_FACTOR (5.0 / 9.0)
+#define CELSIUS_TO_FAHRENHEIT_FACTOR (9.0 / 5.0)
+
+int main(void) {
+    float temperatureValue;
+    char temperature;
+    float convertedTemperature; // Variable to store the result of the
+conversion
+
+    printf("This is a Fahrenheit or Celsius Converter\n");
+    printf("Enter a temperature symbol ('C' for Celsius or 'F' for Fahrenheit)
+and a value:\n");
+
+    // Read temperature symbol
+    if (scanf(" %c", &temperature) != 1 || (temperature != 'C' && temperature !=
+'F')) { printf("Invalid input: %c is not a recognized temperature symbol.\n",
+temperature); return 1; // Exit with an error code
+    }
+
+    // Read temperature value
+    printf("Enter the temperature value: ");
+    if (scanf("%f", &temperatureValue) != 1) {
+        printf("Invalid input. Please enter a valid temperature number.\n");
+        return 1;
+    }
+
+    // Perform the conversion
+    if (temperature == 'C') {
+        convertedTemperature = (temperatureValue * CELSIUS_TO_FAHRENHEIT_FACTOR)
++ FAHRENHEIT_OFFSET; printf("Converted to Fahrenheit: %.2f\n",
+convertedTemperature); } else if (temperature == 'F') { convertedTemperature =
+(temperatureValue - FAHRENHEIT_OFFSET) * FAHRENHEIT_TO_CELSIUS_FACTOR;
+        printf("Converted to Celsius: %.2f\n", convertedTemperature);
+    }
+
+    return 0;
+}
+
+ * ```
  */
