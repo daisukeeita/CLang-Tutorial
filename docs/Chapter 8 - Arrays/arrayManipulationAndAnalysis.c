@@ -33,6 +33,8 @@
  * [x] Initiate an array
  * [x] Read the input and store it in an array
  *
+ * [x] Validate User Input to only Integers
+ *
  * [x] Get the sum and all the numbers in the array
  * [x] Get the average of the array
  * [x] Get the smallest number inside of the array
@@ -63,7 +65,16 @@ int main(void) {
   printf("Enter 0 if you want to end the program.\n");
 
   for (int i = 0; i < MAX_SIZE; i++) {
-    scanf("%d", &inputNumber);
+    while (1) {
+      if (scanf("%d", &inputNumber) == 1) {
+        break;
+      } else {
+        printf("Invalid Input. Please enter a positive or negative integer.\n");
+        printf("Enter 0 if you want to end the program.\n");
+        while (getchar() != '\n')
+          ;
+      }
+    }
 
     if (inputNumber == 0) {
       break;
