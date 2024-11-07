@@ -151,3 +151,99 @@ Both `p` and `q` now point to `i`, so we can change `i` by assigning a new value
 Any number of pointer variables may point to the same object. Be careful not to confuse.
 
 ## Pointers as Arguments
+
+We saw in Section 9.3 that a variable supplied as an argument in a function call is protected against change, because C passess arguments by value. This property of C can be a nuisance if we want the function to be able to be able to modify the variable.
+
+```c
+void decompose (double x, long int_part, double frac_part) {
+  int_part = (long) x; /* drops the fractional part of x */
+  frac_part = x - int_part;
+}
+
+decompose(3.14159, i, d);
+```
+
+At the beginning of the call, `3.14159` is copied into `x`, `i`'s value is copied into `int_part`, and `d`'s value is copied into `frac_part`. The statements inside `decompose` then assign 3 to `int_part` and `.14159` to `frac_part`, and the function returns.
+Unfortunately, `i` and `d` weren't affected by the assignments to `int_part` and `frac_part`, so they have the same values after the call as they did before the call.
+
+If the goal is to modify the arguments itself, this method could pose a problem.
+
+Pointers offer a solution to this problem: instead of passing a variable `x` as the argument ot a function, we'll supply `&x`, a pointer to `x`. We'll declare the corresponding parameter `p` to be a pointer.
+
+When a function is called, `p` will have the value `&x`, hence `*p` (the object that `p` points to) will be and alias for `x`. Each appearance of `*p` in the body of the function will be an indirect refernce to `x`, allowing the function both to read `x` and to modify it.
+
+```c
+void decompose (double x, long *int_part, double *frac_part) {
+  *int_part = (long) x;
+  *frac_part = x - *int_part;
+}
+
+decompose(3.14159, &i, &d);
+```
+
+Because of the `&` operator in front of `i` and `d`, the arguments to `decompose` are _pointers_ to `i` and `d`, not the _values_ of `i` and `d`.
+When `decompose` is called, the value `3.14159` is copied into `x`, a pointer `i` is stored in `int_part`, and a pointer `d` is stored in `frac_part`.
+
+The first assignemnt in the body of `decompose` converts the value of `x` to type `long` and stores it in the object pointed to by `int_part`. since `int_part` points to `i`, the assignment put the value `3` in `i`.
+
+```
+x = 3.14159
+int_part -> i = 3
+frac_part -> d = ?
+```
+
+The second assignment fetches the value that `int_part` points to, which is `3`. This value is converted to type `double` and subtracted from `x`, giving `0.14159`, which is then store in the object that `frac_part` points to.
+
+```
+x = 3.14159
+int_part -> i = 3
+frac_part -> d = 0.14159
+```
+
+When `decompose` returns, `i` and `d` will have the values `3` and `0.14159`.
+
+> [!WARNING]
+> Failing to pass a pointer to a function when one ex expected can have disastrous results.
+
+## Pointers as Return Values
+
+We can not only pass pointers to functions but also write functions that _return_ pointers.
+
+```c
+int *p, i, j;
+
+int *max (int *a, int *b) {
+  if (*a > *b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+
+p = max(&i, &j);
+```
+
+During the call of `max`, `*a` is an alias for `i`, while `*b` is an alias for `j`. If `i` has larger value that `j`, `max` returns the address of `i`; otherwise, it returns that address of `j`. After the call, `p` points to either `i` or `j`.
+
+Although the `max` function returns one of the pointers passed to it as an argument, that's not the only possibility. A function could also return a pointer to an external variable or to a local varaible that's been declared `static`.
+
+> [!WARNING]
+> Never return a pointer to an _automatic_ local variable:
+>
+> ```c
+> int *f(void) {
+>   int i;
+>   ...
+>   return &i;
+> }
+> ```
+>
+> The variable `i` doesn't exist once `f` returns, so the pointer to it will be invalid. Some compilers issue a warning such as "_function returns address of lcal variable_" in this situation.
+
+Pointers can point to array elements, not just ordinary variables. If `a` is an array, then `&a[i]` is a pointer to element `i` of `a`. When a function has an array argument, it's sometimes useful for the function to return a pointer to one of the elements in the array.
+
+```c
+int *find_middle(int a[], int n) {
+  return &a[n/2];
+}
+```
