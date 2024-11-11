@@ -6,4 +6,6 @@
 
 Pointer is a very fundamental and important concept in programming.
 
-To understand pointers, we first should understand how various data types of variables ar estored in computer's memory.
+To understand pointers, we first should understand how various data types of variables are stored in computer's memory.
+
+In a memory architecture, each byte of the memory has an address.
