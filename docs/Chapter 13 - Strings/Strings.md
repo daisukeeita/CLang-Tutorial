@@ -117,3 +117,172 @@ Some programming languages provide a special `string` type for declaring string 
 
 This approach is simple, but has significant difficulties. It's sometimes hard to tell whether an array of characters is being used as a string. If we write out own string-handling functions, we've got to be careful that they deal properly with the null character.
 Also, there's no faster way to determine the length of a string that a character-by-character search for the null character.
+
+Let's say that we need a variable capable of storing a string of up to 80 characters. Since the string will need a null character at the end, we'll declare the variable to be an array of 81 characters.
+
+```c
+#define STR_LEN 80
+
+char str[STR_LEN + 1];
+```
+
+We defined `STR_LEN` to be `80` rather that `81`, thus emphasizing the fact that `str` can store strings of no more that 80 characters, and then added 1 to `STR_LEN` in declaration of `str`. This is a common practice among C programmers.
+
+Declaring a character array to have length `STR_LEN + 1` doesn't mean that it will always contain a string of `STR_LEN` characters. The length of a string depends on the position of the terminating null character, not the length of the array in which the string is stored.
+
+An array of `STR_LEN + 1` can hold strings of various lengths, ranging from the empty string to strings of length `STR_LEN`.
+
+> [!WARNING]
+> When declaring an array of characters that will be used to hold a string, always make the array on character long than the string, because of the C convention that every string is terminated by a null character.
+> Failing to leave room for the null character may cause unpredictable results when the program is executed, since functions in the C library assume that string are null terminated.
+
+### Initializing a String Variable
+
+```c
+char date1[8] = "June 14";
+```
+
+A string variable can be initialized at the same time it's declared.
+The compiler will put the characters from `"June 14"` in the `date1` array, then add a null character so that `date1` can be used as a string.
+
+`date1` | J | u | n | e | | 1 | 4 | \0 |
+
+Although `"June 14"` appear to be a string literal, it's not. Instead, C view it as an abbreviation for an array initializer.
+
+What if the initializer is too short to fill the string variable? In that case, the compiler adds extra null characters.
+
+```c
+char date2[9] = "June 14";
+```
+
+`date2` | J | u | n | e | | 1 | 4 | \0 | \0 |
+
+This behaviour is consistent with C's treatment of array initializers in general. When an array initializer is shorter that the array itself, the remaining elements are initialized to zero.
+
+By initializing the leftover elements of a character array to `\0`, the compiler is following the same rule.
+
+What if the initializer is longer than the string variable? That's illegal for strings, just as it's illegal for other arrays.
+
+> [!WARNING]
+> If you're planning to initialize a character array to contain a string, be sure that the length of the array is longer that the length of the initializer. Other wise, the compiler will quietly omit the null character, making the array unusable as a string.
+
+The declaration of a string variable may omit its length, in which case the compiler computes it.
+
+The compiler sets aside eight characters for `date4`, enough to store the characters in `"June 14"` plus a null character. Omitting the length of a string variable is especially useful if the initializer is long, since computing the length by hand is error-prone.
+
+The fact that the length of `date4` isn't specified doesn't mean that the array's length can be changed later. Once the program is compiled, the length of `date4` is fixed at eight.
+
+### Character Arrays versus Character Pointers
+
+```c
+char date[] = "June 14";
+
+char *date = "June 14";
+```
+
+Comparing the declaration of `date` as an _array_ and `date` as a _pointer_.
+
+Thanks to the close relationship between arrays and pointers, we can use either version of `date` as a string. In particulat, any function expecting to be passed a character array or character pointer will accept either version of `date` as an argument.
+
+However, we must be careful not to make the mistake of thinking that the two version of `date` are interchangeable. There are significant differences between the two:
+
+- In the array version, the characters stored in `date` can be modified, like the elements of any array. In the pointer version, `date` points to a string literal, and we saw that string literals shouldn't be modified.
+- In the array version, `date` is an array name. In the pointer version `date` is a variable that can be made to point to other strings during program execution.
+
+If we need a string that can be modified, it's our responsibility to set up an array of characters in which to store the string; declaring a pointer variable isn't enough.
+
+The `pointer` declaration causes the compiler to set aside enough memory for a pointer variable; unfortunately, it doesn't allocate space for a string. Before we can use `p` variable as a string, it must point to an array of character.
+
+```c
+char str[STR_LEN + 1], *p;
+
+p = str;
+```
+
+`p` now points to the first character of `str`, so we can use `p` as a string.
+
+> [!WARNING]
+> Using an uninitialized pointer variable as a string is a serious error. Consider the following example, which attempts to build the string "abc":
+>
+> ```c
+> char *p;
+>
+> p[0] = 'a'; /* WRONG */
+> p[1] = 'b'; /* WRONG */
+> p[2] = 'c'; /* WRONG */
+> p[3] = '\0'; /* WRONG */
+> ```
+>
+> Since `p` hasn't been initialized, we don't know where it's pointing. Using the pointer to write the characters `a, b, c, and \0` into memory causes undefined behaviour.
+
+## Reading and Writing Strings
+
+Writing a string is easy using either the `printf` or `puts` functions. Reading a string is a bit harder, primarily because of the possibility that the input string may be longer than the string variable into which it's being stored.
+
+To read a string in a single step, we can use either `scanf` of `gets`. As an alternative, we can read strings one character at a time.
+
+### Writing Strings Using `printf` and `puts`
+
+The `%s` conversion specification allows `printf` to write a string.
+
+```c
+char str[] = "Are we having fun yet?";
+
+printf("%s\n", str);
+
+/* OUTPUT */
+"Are we having fun yet?"
+```
+
+`printf` writes the characters in a string one by one until it encounters a null character.
+If the null character is missing, `printf` continues past the end of the string until if finds a null character somewhere in memory.
+
+To print just part of a string, we can use the conversion specification `%.ps`, where _p_ is the number of character to be displayed.
+
+```c
+printf("%.6s\n", str);
+
+/* OUTPUT */
+"Are we"
+```
+
+### Reading Strings Using `scanf` and `gets`
+
+The `%s` conversion specification allows `scanf` to read a string into a character array.
+
+```c
+scanf("%s", str);
+```
+
+There's no need to put the `&` operator in front of `str` in the call of `scanf`; like any array name, `str` is treated as a pointer when passed to a function.
+
+When `scanf` is called, it skips white space, then reads characters and stores them in `str` until in encounters a white-space character.
+`scanf` always stores a null character at the end of the string.
+
+A string read using `scanf` will never contain white space. Consequently, `scanf` won't usually read a full line of input; a new-line character will cause `scanf` to stop reading, but so will a space or tab character.
+To read an entire line of input at a time, we can use `gets`. Like `scanf`, the `gets` function reads input characters into an array, then stores a null character.
+
+However, `gets` is somewhat different from `scanf`:
+
+- `gets` doesn't skip white space before starting to read the string, `scanf` does.
+- `gets` reads until it finds a new-line character, `scanf` stops at any white-space character. Incidentally, `gets` discards the new-line character instead of storing it in the array; the null character takes its place.
+
+```c
+char sentence[SENT_LEN + 1];
+
+printf("Enter a sentence:\n");
+scanf("%s", sentence);
+
+gets(sentence);
+```
+
+To see the difference between `scanf` and `gets`, consider the following program fragment.
+
+Suppose that after the prompt `Enter a sentence:` the enter use enters the line `To C, or not to C: that is the question`.
+
+`scanf` will store the string "To" in `sentence`. The next call of `scanf` will resume reading the line at the space after the word `To`.
+
+Now suppose that we replace `scanf` by `gets`. When the use enters the same input as before, `gets` will store the string "To C, or not to C: that is the question." in `sentence`.
+
+> [!WARNING]
+> As they read characters into array, `scanf` and `gets` have no way to detect when it's full. Consequently, they may store characters past the end of the array causing undefined behaviour. `scanf` can be made safer by using the conversion specification `&ns` instead of `%s`, where _n_ is an integer indicating the maximum number of characters to be stored. `gets`, unfortunately, is inherently unsafe; `fgets` is a much better alternative.
