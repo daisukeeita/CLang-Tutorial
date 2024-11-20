@@ -286,3 +286,107 @@ Now suppose that we replace `scanf` by `gets`. When the use enters the same inpu
 
 > [!WARNING]
 > As they read characters into array, `scanf` and `gets` have no way to detect when it's full. Consequently, they may store characters past the end of the array causing undefined behaviour. `scanf` can be made safer by using the conversion specification `&ns` instead of `%s`, where _n_ is an integer indicating the maximum number of characters to be stored. `gets`, unfortunately, is inherently unsafe; `fgets` is a much better alternative.
+
+### Reading Strings Character by Character
+
+Since both `scanf` and `gets` are risky and insufficiently flexible for many applications, C programmers often write their own input functions. By reading strings one character at a time, these functions provide a greater degree of control than the standard input functions.
+
+If we decide to design our own input functions, we'll need to consider the following issues:
+
+1. Should the function skip white space before beginning to store the string?
+2. What character causes the function to stop reading: a new-line character, any white-space character, or some other character? Is this character stored in the string or discarded?
+3. What should the function do if the input string is too long to store: discard the extra characters or leave them for the next input operations?
+
+```c
+int read_line (char str[], int n) {
+  int ch, i = 0;
+
+  while ((ch = getchar()) != '\n') {
+    if (i < n) str[i++] = ch;
+  }
+
+  str[i] = '\0'; /* terminates string */
+  return i; /* number of characters stored */
+}
+```
+
+Suppose wee need a function that doesn't skip white-space characters, stops reading at the first new-line character, and discards extra characters. The function might have the prototype above.
+
+`str` represents the array into which we'll store the input, and `n` is the maximum number of characters to be read. If the input line contains more than `n` characters, `read_line` will discard the additional characters.
+
+`read_line` consists primarily of a loop that calls `getchar` to read a character and then stores the character in `str`, provided that there's room left. The loop terminates when the new-line character is read.
+
+## Accessing the Characters in a String
+
+Since strings are stores as arrays, we can use subscripting to access the characters in a string. To process every character in a string, `s` for example, we can set up a loop that increments a counter `i` and selects characters via the expressions `s[i]`.
+
+```c
+int count_spaces (const char s[]) {
+  int count = 0, i;
+
+  for (i = 0; s[i] != '\0'; i++) {
+    if (s[i] == ' ') count++;
+  }
+
+  return count;
+}
+```
+
+```c
+int count_spaces (const char *s) {
+  int count = 0;
+
+  for (; *s != '\0'; s++) {
+    if (*s == ' ') count++;
+  }
+
+  retun count;
+}
+```
+
+Suppose we need a function that counts the number of spaces in a string. Using array subscripting, we might write the function in the following example above.
+
+Note that `const` doesn't prevent `count_spaces` from modifying `s`; it's there to prevent the function from modifying what `s` points to. And since `s` is a copy of the pointer that's passed to `count_spaces`, incrementing `s` doesn't affect the original pointer.
+
+Due to making a function that uses a pointer, some questions about how to write string functions:
+
+1. **_Is it better to use array operations or pointer operations to access the characters in a string?_**
+
+- We're free to use whichever is more convenient; we can even mix the two. In the second version of `count_spaces`, treating `s` as a pointer simplifies the function slightly by removing the need for the variable `i`. Traditionally, C programmers lean toward using pointer operations for processing strings.
+
+2. **_Should a string parameter be declared as an array or as a pointer?_**
+
+- The two versions of `count_spaces` illustrate the options: the first version declares `s` to be an array; the second version declares `s` to be a pointer. Actually, there's no difference between the two declarations - recall Section 12.3 that the compiler treats an array parameter as though it had been declared as a pointer.
+
+3. **_Does the form of the parameter (s[] or \*s) affect what can be supplied as an argument?_**
+
+- No. When `count_spaces` is called, the argument could be an array name, a pointer variable, or a string literal - `count_spaces` can't tell the difference.
+
+## Using the C String Library
+
+Some programming languages provide operators that can copy strings, compare strings, concatenate strings, select substrings, and the like. C's operators, in contrast, are essentially useless for working with strings. Strings are treated as arrays in C, so they're restricted in the same ways as arrays - in particular, they can't be copied or compared using operators.
+
+> [!WARNING]
+> Direct attempts to copy or compare strings will fail. For example, suppose that `str1` and `str2` have been declared as follows:
+>
+> `char str1[10], str2[10]`
+>
+> Copying a string into a character array using the `=` operator is not possible:
+>
+> ```c
+> str1 = "abc"; /* WRONG */
+> str2 = str1; /* WRONG */
+> ```
+>
+> We saw in Section 12.3 that using an array name as the left operand of `=` is illegal.
+> _Initializing_ a character array using `=` is legal, though:
+>
+> `char str1[10] = "abc`
+>
+> In the context of a declaration, `=` is not the assignment operator.
+>
+> Attempting to compare strings using a relational or equality operator is legal but won't produce the desired results.
+>
+> `if (str1 == str2)... /* WRONG */`
+>
+> This statement compares `str1` and `str2` as _pointers_; it doesn't compare the contents of the two arrays. Since `str1` and `str2` have different addresses, the expression `str1 == str2` must have the value 0.
